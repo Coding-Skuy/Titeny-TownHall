@@ -1,61 +1,44 @@
-# Titeny-TownHall — AI Insight Platform
+> Versi: v1.0.0 | Status: disetujui | Menggantikan: -
 
-> **Peran:** papan insight prediksi harga dan panen untuk petani, vendor, dan CEO.
-> Setiap pola menceritakan sebuah kisah — Titeny mengubah data Lumbung/TitipO/Pasaree menjadi keputusan harian.
-> Bahasa: Indonesia. Varian 1 (disahkan 2026-10-04). Nol TBD.
+# Titeny-TownHall — Divisi AI Insight (Konsumen Data 3 Divisi) PT ChefGenie
 
-## Peran Pengguna
+## Peran Titeny
 
-- **Petani:** kapan jual/tahan; sinyal panen kabupaten. Masuk via PIN zona, baca via web responsif.
-- **Vendor (keliling/lapak):** saran stok besok per zona. Masuk via PIN zona, baca via web responsif.
-- **CEO/Operasional:** peta surplus/defisit, margin, prioritas intervensi. Masuk via akun + OTP.
-- **Analis (internal):** kurasi data dan model via aplikasi desktop Windows. Satu-satunya peran tulis-terhadap-tayang.
+Titeny adalah divisi AI Insight PT ChefGenie: mengubah data Lumbung, TitipO, dan Pasaree menjadi keputusan harian petani, vendor, dan CEO. Setiap pola menceritakan sebuah kisah — papan insight prediksi harga dan panen untuk 12 komoditas × 8 pasar pada horizon H+1–H+7, plus panen mingguan M+1–M+4 dan demand H+7/H+30. Titeny tidak menghimpun data mentah sendiri dan read-only terhadap DB sumber: tidak pernah menulis ke DB Lumbung, TitipO, atau Pasaree. Satu-satunya basis tulis adalah DB `titeny` (tabel `event_masuk`, `prediksi_harga`, `prediksi_panen`). Ingest mengunci 11 event berversi yang idempoten via `event_id` dan `X-Idempotency-Key`. Autentikasi: JWT `aud=titeny`, `iss=chefgenie-auth` untuk CEO/analis/layanan, plus PIN 6 digit zona untuk petani/vendor baca via web responsif. Analis internal mengkurasi via aplikasi desktop Windows; satu-satunya peran tulis-terhadap-tayang. Bahasa: Indonesia.
 
-Mobile: **hanya baca**, cukup web responsif 360 px. Tidak ada app khusus di V1.
+## Peta Versi Aktif
 
-## Peta Folder
+- Versi aktif: v1.0.0 (disetujui). Isi beku ada di `versions/v1.0.0/`.
+- `versions/v1.0.0/CHANGELOG.md` — ringkasan versi awal.
+- `versions/v1.0.0/BRD/` — kebutuhan bisnis BR-001 dan seterusnya.
+- `versions/v1.0.0/PRD/` — pengguna dan kriteria US-001 dan seterusnya.
+- `versions/v1.0.0/FRD/` — kebutuhan fungsional FR-001 dan seterusnya.
+- `versions/v1.0.0/FSD/` — rancangan alur, model data event_masuk dan prediksi, dan kontrak API.
+- `versions/v1.0.0/SNAPSHOT-ROADMAP.md` — salinan beku janji v1.0.0.
+- Peta hidup lintas versi ada di `roadmap/`: `TIMELINE.md`, `MILESTONE.md`, `ROADMAP.md`.
 
-```
-data/     10-sumber-data.md ......... 10 sumber dari Lumbung/TitipO/Pasaree + cuaca + kalender
-          20-kontrak-event.md ........ amplop + 11 event berversi + aturan idempoten
-model/    10-prediksi-harga.md ....... 12 komoditas × 8 pasar, horizon H+1–H+7, metode transparan
-          20-prediksi-panen-demand.md  panen M+1–M+4 + demand H+7/H+30 + sinyal surplus/defisit
-produk/   10-papan-insight.md ........ 3 papan (petani/vendor/CEO) + keadaan kosong/error
-          21-kontrak-api-web-bun.md .. REST /api/v1 (baca + event masuk + umpan-balik)
-          22-kontrak-desktop-windows.md  5 layar analis + kontrak aksi tulis + audit
-platform/ 10-matriks-web-desktop.md ... siapa-bisa-apa di web vs. desktop
-          20-navigasi3.md ............ graf Navigation3 desktop + analogi rute SvelteKit
-          50-web-bun-svelte.md ....... struktur + runes + SSR + job + pengujian
-          30-desktop-windows-analis.md  KMP/Compose, MSI, SQLite luring, diagnostik
-metrik/   10-akurasi-dan-adopsi.md .... MAPE + adopsi 90 hari + alarm
-```
+## Cara Baca History
 
-## Stack Terkunci
+1. Mulai dari `versions/v1.0.0/CHANGELOG.md` untuk ringkasan versi.
+2. Lanjut ke `versions/v1.0.0/BRD/00-ikhtisar.md` untuk konteks bisnis, lalu `PRD/10-pengguna.md` untuk peran.
+3. Untuk janji waktu itu, baca `versions/v1.0.0/SNAPSHOT-ROADMAP.md` yang sudah dibekukan dan tidak diubah lagi.
+4. Untuk kondisi terkini lintas versi, baca `roadmap/TIMELINE.md` dan `roadmap/MILESTONE.md`.
+5. Riwayat perubahan antar versi dilacak lewat `git log` dan `CHANGELOG.md` tiap versi. File lama sengaja dihapus setelah dipindah agar tidak ada dua sumber kebenaran.
 
-- **Web dashboard:** Bun 1.4.x + Svelte 5 + SvelteKit 2 + TypeScript 5.9.x (+ zod 3.23.x).
-- **Analis-desktop Windows:** Kotlin Multiplatform + Compose Multiplatform + Navigation3 1.0.0 (Ktor 3.1.x, SQLDelight 2.0.x). Windows 10 21H2+ / 11 64-bit, MSI.
-- **Mobile:** tidak ada app khusus; web responsif baca-saja.
+## TownHall Lain dan Pedoman Induk
 
-## Data Berasal Dari
+Pedoman induk: https://github.com/Coding-Skuy/ChefGenie-TownHall.
 
-- Lumbung (stok, panen, keuangan): `Lumbung-Backend` + `Lumbung-TownHall`.
-- TitipO (transaksi, rute, vendor keliling): `TitipO-TownHall`.
-- Pasaree (harga, lapak, produsen): `Pasaree-TownHall`.
+Lima TownHall lain yang memakai pola template emas yang sama:
 
-## Tautan ke Lumbung (metrik & keuangan)
+- https://github.com/Coding-Skuy/Lumbung-TownHall — hulu dan supply, pemilik DB Lumbung dan event `stok.*`, `panen.dicatat`, `keuangan.ringkasan_harian`.
+- https://github.com/Coding-Skuy/Pawonee-TownHall — dapur dan pengolahan.
+- https://github.com/Coding-Skuy/Pasaree-TownHall — pasar dan penjualan, pemilik event `harga.diperbarui`, `lapak.status_berubah`.
+- https://github.com/Coding-Skuy/Pedaree-TownHall — pengantar dan last-mile.
+- https://github.com/Coding-Skuy/TitipO-TownHall — titip dan kemitraan, pemilik event `transaksi.dibuat`, `vendor.status_berubah`.
 
-- Lumbung-TownHall: https://github.com/Coding-Skuy/Lumbung-TownHall — folder `metrik/` (definisi omzet/margin) dan `keuangan/` (ringkasan harian yang dipakai S10).
-- Lumbung-Backend: https://github.com/Coding-Skuy/Lumbung-Backend — sumber event `stok.*`, `panen.dicatat`, `keuangan.ringkasan_harian`.
-- Dampak Titeny dilaporkan bulanan ke Lumbung keuangan (lihat `metrik/10-akurasi-dan-adopsi.md` §4).
+Pola yang ditiru: penamaan `versions/vX.Y.Z/BRD|PRD|FRD|FSD/`, file `NN-nama-kebab.md`, header versi satu baris, dan bagian Batasan di tiap file.
 
-## Mulai Cepat
+## Batasan
 
-```bash
-git clone https://github.com/Coding-Skuy/Titeny-TownHall
-# Web:
-cd apps/web && bun install && bun run dev --port 5173
-# Desktop analis (Windows):
-./gradlew :composeApp:packageMsi
-```
-
-Dokumen rinci mulai dari `data/10-sumber-data.md` → `model/` → `produk/` → `platform/` → `metrik/`.
+Batasan ruang lingkup repo ini: hanya insight prediksi harga H+1–H+7 untuk 12 komoditas × 8 pasar, prediksi panen M+1–M+4 dan demand H+7/H+30, papan insight 3 peran, kontrak API web Bun dan desktop analis Windows, serta metrik akurasi dan adopsi. Di luar batas: penghimpunan data mentah milik Lumbung/TitipO/Pasaree, transaksi jual-beli milik sistem asal, penentuan resep dapur milik Pawonee, routing last-mile milik Pedaree, dan skema titip milik TitipO. Titeny tidak menulis ke DB sumber dalam keadaan apa pun.
