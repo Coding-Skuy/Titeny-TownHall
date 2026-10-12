@@ -2,6 +2,10 @@
 
 > Selamat datang, Pengelana. Anda berada di jantung dokumentasi Titeny.
 > Pilih jalan Anda untuk memahami ekosistem ChefGenie.
+>
+> **Tautan ke visi:** Titeny adalah otak visi ChefGenie — prediksi
+> harga/panen/demand untuk keputusan harian. Lihat
+> [VISI-MISI](../../VISI-MISI.md).
 
 ---
 
